@@ -41,6 +41,11 @@ function my_map_show_map($atts){
 	  $point = new MyMapPoint($value,$val_lon);
 	  $point->setTitle( $title );
 	  $point->setURL( $url );
+	  if (has_post_thumbnail( $post ) ){
+	    //$imageUrl = wp_get_attachment_image_src( get_post_thumbnail_id( $post ), 'single-post-thumbnail' );
+	    $imageUrl = wp_get_attachment_image_src( get_post_thumbnail_id( $post ), [150,150],true );
+	    $point->setImageURL($imageUrl[0]);
+	  }
 	  
 	  $map->addPoint($point);
 	  $content .= "<b>".$value."</b>";

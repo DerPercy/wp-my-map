@@ -5,6 +5,7 @@ class MyMapPoint {
   protected $lon;
   protected $title = "";
   protected $url = "";
+  protected $imageUrl = "";
   
   function __construct($lat,$lon){
     $this->lat = $lat;
@@ -27,6 +28,15 @@ class MyMapPoint {
 
   public function getURL(){
     return $this->url;
+  }
+  
+  // Image URL
+  public function setImageURL($url){
+    $this->imageUrl = $url;
+  }
+
+  public function getImageURL(){
+    return $this->imageUrl;
   }
   
   

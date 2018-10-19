@@ -47,8 +47,15 @@ Fetured image
 
   </div>
 <?php endif; ?>
+
+/*
+
+ anchor: [0.5, 46],
+          anchorXUnits: 'fraction',
+          anchorYUnits: 'pixels',
 */
     foreach($this->points as $point){
+    $html .= "alert('".$point->getImageUrl()."');";
     $html .="var vectorLayer = new ol.layer.Vector({".
 	    "source:new ol.source.Vector({".
 	      "features: [new ol.Feature({".
@@ -58,11 +65,24 @@ Fetured image
 	      "})]".
 	    "}),".
 	    "style: new ol.style.Style({".
-	      "image: new ol.style.Icon({".
+	      "image: new ol.style.Icon({";
+      if($point->getImageUrl() != ""){
+        $html .=
+		//"anchor: [0.5, 0.5],".
+		//"anchorXUnits: 'fraction',".
+		//"anchorYUnits: 'fraction',".
+		//"size: [40,40],".
+		"scale: 0.25,".
+		
+		"src: '".$point->getImageUrl()."'";
+      }else{
+	$html .=
 		"anchor: [0.5, 0.5],".
 		"anchorXUnits: 'fraction',".
 		"anchorYUnits: 'fraction',".
-		"src: '".plugins_url('my-map/public/images/RedDot.svg')."'".
+		"src: '".plugins_url('my-map/public/images/RedDot.svg')."'";
+      }
+	$html .=
 	      "})".
 	    "})".
 	  "});".
