@@ -1,0 +1,19 @@
+ 
+.my-map-popup {
+  background-color: #FFFFFF;
+  border: 2px solid #272727;
+  border-radius: 5px;
+  padding: 5px;
+}
+
+#my-map-popup a.my-map-popup-link {
+  box-shadow: none;
+  text-decoration: none;
+  
+}
+
+
+
+a.my-map-popup-link {
+  text-decoration: none;
+}

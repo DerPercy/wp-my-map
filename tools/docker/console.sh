@@ -1,0 +1,1 @@
+docker exec -it docker_wordpress_1 /bin/bash
