@@ -55,7 +55,7 @@ Fetured image
           anchorYUnits: 'pixels',
 */
     foreach($this->points as $point){
-    $html .= "alert('".$point->getImageUrl()."');";
+    //$html .= "alert('".$point->getImageUrl()."');";
     $html .="var vectorLayer = new ol.layer.Vector({".
 	    "source:new ol.source.Vector({".
 	      "features: [new ol.Feature({".
