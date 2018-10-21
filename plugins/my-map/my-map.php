@@ -1,6 +1,11 @@
 <?php 
 /*
 Plugin Name: My Map
+Version: 0.1.0
+Plugin URI: https://github.com/DerPercy/wp-my-map
+Description: A plugin, which shows the wordpress posts on a map.
+Author: DerPercy
+Author URI: https://github.com/DerPercy
 */
 
 
