@@ -13,7 +13,6 @@ class MyMap {
   }
   function buildHTMLCode(){
   
-    $html = "<h3>My Map</h3>";
     $html .= "<style>"
 	    . ".map {"
 	    . "height: 400px;"
@@ -37,61 +36,89 @@ class MyMap {
 	  .	"view: new ol.View({center: ol.proj.fromLonLat([37.41,8.82]),zoom: 2})"
 	  .  "});";
 	  
-	  // Add a marker
-	  
-/*
-Fetured image
-<?php if (has_post_thumbnail( $post->ID ) ): ?>
-  <?php $image = wp_get_attachment_image_src( get_post_thumbnail_id( $post->ID ), 'single-post-thumbnail' ); ?>
-  <div id="custom-bg" style="background-image: url('<?php echo $image[0]; ?>')">
-
-  </div>
-<?php endif; ?>
-
-/*
-
- anchor: [0.5, 46],
-          anchorXUnits: 'fraction',
-          anchorYUnits: 'pixels',
-*/
+    // Add marker
+    $html .="var features = [];";
+    
+    // Insert features
     foreach($this->points as $point){
-    //$html .= "alert('".$point->getImageUrl()."');";
-    $html .="var vectorLayer = new ol.layer.Vector({".
-	    "source:new ol.source.Vector({".
-	      "features: [new ol.Feature({".
+    $html .="features.push(".
+	      "new ol.Feature({".
 		"geometry: new ol.geom.Point(ol.proj.transform([parseFloat(".$point->getLon()."), parseFloat('".$point->getLat()."')], 'EPSG:4326', 'EPSG:3857')),".
 		"my_data_title: '". $point->getTitle() ."',".
 		"my_data_url: '". $point->getURL() ."',".
-	      "})]".
-	    "}),".
-	    "style: new ol.style.Style({".
-	      "image: new ol.style.Icon({";
-      if($point->getImageUrl() != ""){
-        $html .=
-		//"anchor: [0.5, 0.5],".
-		//"anchorXUnits: 'fraction',".
-		//"anchorYUnits: 'fraction',".
-		//"size: [40,40],".
-		"scale: 0.25,".
-		
-		"src: '".$point->getImageUrl()."'";
-      }else{
-	$html .=
-		"anchor: [0.5, 0.5],".
-		"anchorXUnits: 'fraction',".
-		"anchorYUnits: 'fraction',".
-		"src: '".plugins_url('my-map/public/images/RedDot.svg')."'";
-      }
-	$html .=
+		"my_data_image_url: '". $point->getImageURL() ."',".
 	      "})".
-	    "})".
-	  "});".
-	  "map.addLayer(vectorLayer);";
-    }  
+	    ");";
+    }
     
-    /*$html .= "var extent = source.getExtent();".
-	     "map.getView().fit(extent, map.getSize());";*/ 
-	  // Click overlay
+    // SourceVector
+    $html .="var source = new ol.source.Vector({".
+	      "features: features".
+	    "});";
+    
+    // Feature style
+    $html .="\nfunction vectorLayerStyleFunction(feature){".
+	      "var style;".
+	      "if (feature.get('my_data_image_url') != ''){".
+		"style = new ol.style.Style({".
+		  "image: new ol.style.Icon({".
+		    "scale: 0.25,".
+		    "src: feature.get('my_data_image_url'),".
+		  "}),".
+		 // "text: new ol.style.Text({".
+		 //   "text: 'Hello',".
+		 //   "fill: new ol.style.Fill({".
+		 //     "color: '#fff'".
+		 //   "}),".
+		 //   "stroke: new ol.style.Stroke({".
+		 //     "color: '#333'".
+		 //   "}),".
+		 //   "backgroundFill: new ol.style.Fill({".
+		 //     "color: '#333'".
+		 //   "}),".
+		 //   "padding: [2,2,2,2],".
+		 // "})".
+		"});".
+	      "}else{".
+		"style = new ol.style.Style({".
+		  //"image: new ol.style.Icon({".
+		  //  "anchor: [0.5, 0.5],".
+		  //  "anchorXUnits: 'fraction',".
+		  //  "anchorYUnits: 'fraction',".
+		  //  "src: '".plugins_url('my-map/public/images/RedDot.svg')."'".
+		  //"}),".
+		  "image: new ol.style.Circle({".
+		    "radius: 5,".
+		    "stroke: new ol.style.Stroke({".
+		      "color: '#000'".
+		    "}),".
+		    "fill: new ol.style.Fill({".
+		      "color: '#C00'".
+		    "})".
+		  "}),".
+		  //"text: new ol.style.Text({".
+		  //  "text: 'Hello',".
+		  //  "fill: new ol.style.Fill({".
+		  //    "color: '#fff'".
+		  //  "}),".
+		  //  "backgroundFill: new ol.style.Fill({".
+		  //    "color: '#333'".
+		  //  "}),".
+		  //  "padding: [2,2,2,2],".
+		  //"})".
+		"});".
+	      "}".
+	      "return style;".
+	    "};";
+
+    // Vector Layer
+    $html .="\nvar vectorLayer = new ol.layer.Vector({".
+	      "source: source,".
+	      "style: vectorLayerStyleFunction".
+	    "});";
+    $html .="map.addLayer(vectorLayer);";
+	  
+    // Click overlay
     $html .= "var element = document.getElementById('my-map-popup');".
 
 	  "var popup = new ol.Overlay({".
@@ -111,7 +138,6 @@ Fetured image
 		"return feature;".
 	    "});".
 	    "if (feature) {".
-	     // "var text = document.createTextNode('This just got added');".
 	      "var popupLink = jQuery(element).find('#my-map-popup-link');".
 	      "popupLink.attr('href',feature.get('my_data_url'));".
 	      "popupLink.text(feature.get('my_data_title'));".
