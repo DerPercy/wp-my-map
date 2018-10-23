@@ -110,11 +110,46 @@ class MyMap {
 	      "}".
 	      "return style;".
 	    "};";
-
+    // ClusterSource
+    $html .="\nvar clusterSource = new ol.source.Cluster({".
+	      "distance: 40,".
+	      "source: source".
+	    "});";
+    // ClusterSourceStyle
+    $html .="\nfunction clusterSourceStyleFunction(feature){".
+	      "var style;".
+	      "var size = feature.get('features').length;".
+	      
+	      "if(size == 1){".
+		"return vectorLayerStyleFunction(feature.get('features')[0]);".
+	      "}".
+	      "style = new ol.style.Style({".
+		"image: new ol.style.Circle({".
+		  "radius: 10,".
+		  "stroke: new ol.style.Stroke({".
+		    "color: '#000'".
+		  "}),".
+		  "fill: new ol.style.Fill({".
+		    "color: '#C00'".
+		  "})".
+		"}),".
+		"text: new ol.style.Text({".
+		  "text: ''+size,".
+		  "fill: new ol.style.Fill({".
+		    "color: '#fff'".
+		  "}),".
+		  //"backgroundFill: new ol.style.Fill({".
+		  //  "color: '#333'".
+		  //"}),".
+		  "padding: [2,2,2,2],".
+		"})".
+	      "});".
+	      "return style;".
+	    "};";
     // Vector Layer
     $html .="\nvar vectorLayer = new ol.layer.Vector({".
-	      "source: source,".
-	      "style: vectorLayerStyleFunction".
+	      "source: clusterSource,".
+	      "style: clusterSourceStyleFunction".
 	    "});";
     $html .="map.addLayer(vectorLayer);";
 	  
@@ -135,6 +170,14 @@ class MyMap {
 	    
 	    "var feature = map.forEachFeatureAtPixel(evt.pixel,".
 	      "function(feature) {".
+		// For ClusterSource
+		"if(feature.get('features') != null){".
+		  "if(feature.get('features').size > 1){".
+		    "return null;".
+		  "}else{".
+		    "return feature.get('features')[0];".
+		  "}".
+		"}".
 		"return feature;".
 	    "});".
 	    "if (feature) {".
